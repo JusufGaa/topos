@@ -1,0 +1,10 @@
+{
+  "name": "topos",
+  "version": "1.0.0",
+  "description": "`Topos` is a lightweight topology library that is based on canvas.",
+  "main": "index.js",
+  "scripts": {
+  },
+  "author": "Jusuf Gaa",
+  "license": "GPL-3.0-only"
+}
