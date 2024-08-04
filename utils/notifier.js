@@ -43,7 +43,9 @@ export class Notifier {
     }
 
     #addListenerCore(type, listener, scope = undefined) {
-        const temp = typeof scope === 'object' ? { type, listener, scope, key: this.#maxIndex++ } : { type, listener, key: this.#maxIndex++ };
+        const temp = typeof scope === 'object'
+            ? { type, listener, scope, key: this.#maxIndex++ }
+            : { type, listener, key: this.#maxIndex++ };
         if (!(this.#listeners instanceof Array)) {
             this.#listeners = [temp];
             return temp.key;
@@ -101,6 +103,10 @@ export class Notifier {
                 const times = Math.min(1, item.times | 0) - 1;
                 if (times < 1) {
                     this.#listeners.splice(i, 1);
+                    if(this.#listeners.length < 1){
+                        this.#listeners = null;
+                        this.#maxIndex = 0;
+                    }
                 } else {
                     item.times = times;
                 }
