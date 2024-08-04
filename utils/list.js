@@ -1,17 +1,68 @@
+import { Notifier } from "./notifier";
+
 export class List {
     #datas;
+    #datasChangeNotifier;
+    #listeners;
     constructor(length) {
         if (typeof length === 'number') {
             this.#datas = new Array(Math.max(0, length | 0));
         } else {
             this.#datas = [];
         }
+        this.#datasChangeNotifier = new Notifier();
+        this.#listeners = {};
     }
-    at() {
-        throw Error('The method or operation is not implemented.');
+
+    addEventListener(type, listener){
+        const listeners = this.#listeners[type] || {};
+        this.#datasChangeNotifier.addListener
+        this.#listeners[type] = listeners;
     }
-    concat() {
-        throw Error('The method or operation is not implemented.');
+
+    at(index, copy = true) {
+        const i = Number.isInteger(index) ? index : parseInt(index),
+            len = this.#datas.length;
+        if (i >= len) {
+            return undefined;
+        }
+        if (i >= 0) {
+            const result = this.#datas[i];
+            return (copy || !('clone' in result)) ? result : result.clone();
+        }
+        const temp = len + i;
+        if (temp < 0) {
+            return undefined;
+        }
+        const result = this.#datas[temp];
+        return (copy || !('clone' in result)) ? result : result.clone();
+    }
+
+    concat(...values) {
+        const datas = this.#datas.concat(),
+            result = new List(),
+            len = values.length;
+        if (len < 1) {
+            result.#datas = datas;
+            return result;
+        }
+        for (let i = 0; i < len; ++i) {
+            const value = values[i];
+            if (value instanceof List) {
+                datas.push(...value.#datas);
+            } else if (value instanceof Array) {
+                datas.push(...value);
+            } else if (value[Symbol.isConcatSpreadable] && ('length' in value)) {
+                const temp = new Array(value.length),
+                    keys = Object.keys(value);
+
+
+            } else {
+                datas.push(value);
+            }
+        }
+        result.#datas = datas;
+        return result;
     }
     copyWithin() {
         throw Error('The method or operation is not implemented.');
