@@ -96,14 +96,16 @@ export class Notifier {
             || !this.#typeCheck(type)) {
             return;
         }
-        const tempScope = typeof scope === 'object' ? scope : undefined;
+        const temp = typeof scope === 'object'
+            ? { type, listener, scope }
+            : { type, listener };
         for (let i = this.#listeners.length - 1; i >= 0; --i) {
             const item = this.#listeners[i];
-            if (item.type === type && item.listener === listener && item.scope === tempScope) {
+            if (this.#listenerIsSame(item, temp)) {
                 const times = Math.min(1, item.times | 0) - 1;
                 if (times < 1) {
                     this.#listeners.splice(i, 1);
-                    if(this.#listeners.length < 1){
+                    if (this.#listeners.length < 1) {
                         this.#listeners = null;
                         this.#maxIndex = 0;
                     }
